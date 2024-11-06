@@ -29,7 +29,7 @@ func (b *Bot) Start() {
 		os.Exit(1)
 	}
 	bot, err := gotgbot.NewBot(b.Token, &gotgbot.BotOpts{
-		// DisableTokenCheck: true,
+		DisableTokenCheck: true,
 	})
 
 	if err != nil {
@@ -64,6 +64,6 @@ func (b *Bot) Start() {
 		os.Exit(1)
 	}
 
-	log.Infof("%s has started....", bot.Username)
+	log.Infof("Bot has started....")
 	updater.Idle()
 }
