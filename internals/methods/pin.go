@@ -2,6 +2,7 @@ package methods
 
 import (
 	"fmt"
+	"math/rand"
 
 	"github.com/MukundSinghRajput/InlinePinterestBot/internals/api"
 	"github.com/PaulSonOfLars/gotgbot/v2"
@@ -18,6 +19,30 @@ func Pin(b *gotgbot.Bot, ctx *ext.Context) error {
 	images, err := p.Scrap(query, 40)
 	if err != nil {
 		return err
+	}
+
+	if len(images) == 0 {
+		_, err := ctx.InlineQuery.Answer(b, []gotgbot.InlineQueryResult{
+			gotgbot.InlineQueryResultArticle{
+				Id:    fmt.Sprintf("%d", rand.Int()),
+				Title: "Not Found",
+				InputMessageContent: gotgbot.InputTextMessageContent{
+					ParseMode:   "MARKDOWN",
+					MessageText: fmt.Sprintf("The query *%s* wasn't found", query),
+					LinkPreviewOptions: &gotgbot.LinkPreviewOptions{
+						IsDisabled: true,
+					},
+				},
+				Description: fmt.Sprintf("The query %s wasn't found", query),
+			},
+		}, &gotgbot.AnswerInlineQueryOpts{
+			IsPersonal: true,
+			CacheTime:  0,
+		})
+		if err != nil {
+			return err
+		}
+		return nil
 	}
 
 	var articles []gotgbot.InlineQueryResult
